@@ -2,7 +2,7 @@
 
 public interface ISerializer
 {
-    string Serializer<T>(T value);
+    byte[] Serializer<T>(T value);
 
-    T? Deserializer<T>(string value);
+    T? Deserializer<T>(byte[] value);
 }

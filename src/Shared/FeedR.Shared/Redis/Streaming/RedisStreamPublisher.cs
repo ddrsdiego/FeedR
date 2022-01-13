@@ -22,9 +22,9 @@ internal sealed class RedisStreamPublisher : IStreamPublisher
         if (topic == null) throw new ArgumentNullException(nameof(topic));
         
         if (data == null) throw new ArgumentNullException(nameof(data));
-
+        
         var payload = _serializer.Serializer(data);
-
+        
         var taskResult = _subscriber.PublishAsync(topic, payload);
 
         return taskResult.IsCompletedSuccessfully ? new ValueTask() : SlowPublisher(taskResult);

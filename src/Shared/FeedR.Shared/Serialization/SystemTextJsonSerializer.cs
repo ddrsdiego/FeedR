@@ -12,7 +12,7 @@ internal sealed class SystemTextJsonSerializer : ISerializer
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
 
-    public string Serializer<T>(T value) => JsonSerializer.Serialize(value, Options);
+    public byte[] Serializer<T>(T value) => JsonSerializer.SerializeToUtf8Bytes(value, Options);
 
-    public T? Deserializer<T>(string value) => JsonSerializer.Deserialize<T>(value, Options);
+    public T? Deserializer<T>(byte[] value) => JsonSerializer.Deserialize<T>(value, Options);
 }
