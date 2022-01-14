@@ -1,10 +1,13 @@
 namespace FeedR.Feeds.Quotes.Pricing.Services;
 
+using Infra.Options;
+using Microsoft.Extensions.Options;
 using Models;
 
 public class PricingGenerator : IPricingGenerator
 {
     private readonly Random _random = new();
+    private readonly AppConfig _appConfig; 
     private readonly ILogger<PricingGenerator> _logger;
 
     private readonly Dictionary<string, decimal> _currencyPair = new()
@@ -16,9 +19,11 @@ public class PricingGenerator : IPricingGenerator
 
     private bool _isRunning;
 
-    public PricingGenerator(ILogger<PricingGenerator> logger)
+    public PricingGenerator(ILogger<PricingGenerator> logger, IOptions<AppConfig> appConfig)
     {
-        _logger = logger;
+        if (appConfig == null) throw new ArgumentNullException(nameof(appConfig));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _appConfig = appConfig.Value;
     }
 
     public async IAsyncEnumerable<CurrencyPair> StartAsync()
@@ -42,7 +47,7 @@ public class PricingGenerator : IPricingGenerator
                 var currencyPair = new CurrencyPair(symbol, newPricing, timestamp);
                 yield return currencyPair;
                 
-                await Task.Delay(TimeSpan.FromMilliseconds(10));
+                await Task.Delay(TimeSpan.FromMilliseconds(_appConfig.DelayGeneratorPricingInMilliseconds));
             }
         }
     }

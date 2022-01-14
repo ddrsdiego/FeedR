@@ -1,6 +1,5 @@
 ﻿namespace FeedR.Feeds.Quotes.Pricing.Services;
 
-using Models;
 using Requests;
 using Shared.Streaming;
 
