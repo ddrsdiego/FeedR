@@ -7,7 +7,7 @@ using Models;
 public class PricingGenerator : IPricingGenerator
 {
     private readonly Random _random = new();
-    private readonly AppConfig _appConfig; 
+    private readonly AppConfig _appConfig;
     private readonly ILogger<PricingGenerator> _logger;
 
     private readonly Dictionary<string, decimal> _currencyPair = new()
@@ -47,9 +47,10 @@ public class PricingGenerator : IPricingGenerator
                 _logger.LogInformation($"Updated pricing for: {symbol}, {pricing:F} -> {newPricing:F} [{tick:F}]");
 
                 var currencyPair = new CurrencyPair(symbol, newPricing, timestamp);
+                PricingUpdated?.Invoke(this, currencyPair);
                 yield return currencyPair;
-                
-                 await Task.Delay(TimeSpan.FromMilliseconds(_appConfig.DelayGeneratorPricingInMilliseconds));
+
+                await Task.Delay(TimeSpan.FromMilliseconds(_appConfig.DelayGeneratorPricingInMilliseconds));
             }
         }
     }
@@ -59,6 +60,8 @@ public class PricingGenerator : IPricingGenerator
         _isRunning = false;
         return Task.CompletedTask;
     }
+
+    public event EventHandler<CurrencyPair>? PricingUpdated;
 
     private decimal NextTick()
     {

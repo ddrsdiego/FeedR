@@ -14,3 +14,23 @@ foreach (var symbol in symbolsResponse.Symbols)
 {
     Console.WriteLine(symbol);
 }
+
+Console.Write("Provide a symbol (or leave empty): ");
+var providedSymbol = Console.ReadLine()?.ToUpperInvariant();
+if (!string.IsNullOrWhiteSpace(providedSymbol) && !symbolsResponse.Symbols.Contains(providedSymbol))
+{
+    Console.WriteLine($"Invalid symbol: .{providedSymbol}.");
+    return;
+}
+
+var pricingStream = client.SubscriberPricing(new PricingRequest
+{
+    Symbol = providedSymbol
+});
+
+while (await pricingStream.ResponseStream.MoveNext(CancellationToken.None))
+{
+    var current = pricingStream.ResponseStream.Current;
+    Console.WriteLine(
+        $"{DateTimeOffset.FromUnixTimeMilliseconds(current.Timestamp):T} -> {current.Symbol} = {current.Value / 100M:F}");
+}

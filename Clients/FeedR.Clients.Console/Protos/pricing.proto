@@ -6,7 +6,7 @@ package pricing.protos;
 
 service PricingFeed {
   rpc GetSymbols(GetSymbolsRequest) returns (GetSymbolsResponse);
-  rpc SubscribePricing(PricingRequest) returns (stream PricingResponse);
+  rpc SubscriberPricing(PricingRequest) returns (stream PricingResponse);
 }
 
 message GetSymbolsRequest {
