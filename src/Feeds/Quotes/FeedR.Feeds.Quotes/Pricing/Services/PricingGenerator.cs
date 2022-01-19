@@ -26,6 +26,8 @@ public class PricingGenerator : IPricingGenerator
         _appConfig = appConfig.Value;
     }
 
+    public IEnumerable<string> GetSymbols() => _currencyPair.Keys;
+
     public async IAsyncEnumerable<CurrencyPair> StartAsync()
     {
         _isRunning = true;
@@ -47,7 +49,7 @@ public class PricingGenerator : IPricingGenerator
                 var currencyPair = new CurrencyPair(symbol, newPricing, timestamp);
                 yield return currencyPair;
                 
-                await Task.Delay(TimeSpan.FromMilliseconds(_appConfig.DelayGeneratorPricingInMilliseconds));
+                 await Task.Delay(TimeSpan.FromMilliseconds(_appConfig.DelayGeneratorPricingInMilliseconds));
             }
         }
     }

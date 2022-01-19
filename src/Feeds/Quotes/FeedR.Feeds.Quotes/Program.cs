@@ -13,10 +13,12 @@ builder.Services
     .AddRedisStreaming()
     .AddSingleton<PricingRequestChannel>()
     .AddSingleton<IPricingGenerator, PricingGenerator>()
-    .AddHostedService<PricingBackgroundServices>();
+    .AddHostedService<PricingBackgroundServices>()
+    .AddGrpc();
 
 var app = builder.Build();
 
+app.MapGrpcService<PricingGrpcService>();
 app.MapGet("/", () => "FeedR Quotes feed");
 
 app.MapPost("/pricing/start",
